@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\ClientResource\Pages;
 use App\Filament\Admin\Resources\ClientResource\RelationManagers;
 use App\Filament\Admin\Resources\ClientResource\RelationManagers\EmployeeRelationManager;
 use App\Models\Client;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,11 +27,40 @@ class ClientResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
-                    ->required(),
+                Forms\Components\Select::make('branch_id')
+                    ->label('Cabang')
+                    ->relationship('branch', 'name')
+                    ->preload()
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, $livewire) {
+                        if ($state && $livewire instanceof \App\Filament\Admin\Resources\ClientResource\Pages\CreateClient) {
+                            $branch = \App\Models\Branch::find($state);
+                            $branchCode = $branch?->code ?? 'XX';
+                            $prefix = 'CLT-' . $branchCode . '-' .str_pad(\App\Models\Client::query()->max('id') + 1, 5, '0', STR_PAD_LEFT);
+                            $set('code', $prefix);
+                        }
+                    }),
+            
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                    ->label('Client')
+                    ->options(function () {
+                        // Ambil semua user_id yang sudah dipakai di tabel clients
+                        $usedUserIds = Client::pluck('user_id')->filter()->toArray();
+                
+                        return User::whereHas('roles', function ($query) {
+                                $query->where('name', 'Client');
+                            })
+                            ->whereNotIn('id', $usedUserIds) // Hanya user yang belum dipakai
+                            ->get()
+                            ->mapWithKeys(function ($user) {
+                                return [$user->id => $user->name ?? 'Tanpa Nama'];
+                            });
+                    })
+                    ->required()
+                    ->reactive()
+                    // ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
@@ -50,7 +80,12 @@ class ClientResource extends Resource
                     ->tel()
                     ->required()
                     ->maxLength(255),
-            ]);
+                Forms\Components\TextInput::make('code')
+                    ->label('Client Code')
+                    ->required()
+                    ->disabled()
+                    ->dehydrated(true),
+                ]);
     }
 
     public static function table(Table $table): Table
@@ -60,8 +95,8 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('state')
