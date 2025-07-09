@@ -41,9 +41,4 @@ class Sales extends Model
     {
         return $this->employee?->user?->id;
     }
-
-    public function targets()
-    {
-        return $this->hasMany(SalesTarget::class);
-    }
 }

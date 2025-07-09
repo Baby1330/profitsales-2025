@@ -16,11 +16,12 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Company::class);
             $table->string('name');
-            $table->string('address');
-            $table->string('state');
-            $table->string('country');
-            $table->string('postcode');
-            $table->string('phone');
+            $table->string('code');
+            // $table->string('address');
+            // $table->string('state');
+            // $table->string('country');
+            // $table->string('postcode');
+            // $table->string('phone');
             $table->timestamps();
         });
     }

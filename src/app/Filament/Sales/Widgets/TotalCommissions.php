@@ -3,11 +3,13 @@
 namespace App\Filament\Sales\Widgets;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\SalesCommissions;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TotalCommissions extends BaseWidget
 {
@@ -43,12 +45,19 @@ class TotalCommissions extends BaseWidget
             ->whereHas('sales', fn($q) => $q->where('user_id', $userId))
             ->count();
 
+        $produkTerjual = OrderDetail::whereHas('order', function ($query) use ($userId) {
+            $query->whereHas('sales', fn($q) => $q->where('user_id', $userId))
+                ->where('category', 'PO');
+        })
+        ->sum('quantity');
+
         return [
             Card::make('Total Commissions This Month', 'IDR ' . number_format($totalThisMonth, 0))->color('success'),
             Card::make('Total Commissions Last Month', 'IDR ' . number_format($totalLastMonth, 0))->color('gray'),
             Card::make('Total Order', $totalPO . ' Orders')->color('warning')->description('Just order already being PO'),
             Card::make('Rejected Order', $rejectedSO . ' Orders')->color('danger')->description('Sales Orders rejected'),
             Card::make('Pending Approval', $pendingSO . ' Orders')->color('primary')->description('SO waiting for approval'),
+            Card::make('Product Sold', $produkTerjual . ' unit(s)')->color('info')->description('Total Product Sold'),
         ];
     }
 }

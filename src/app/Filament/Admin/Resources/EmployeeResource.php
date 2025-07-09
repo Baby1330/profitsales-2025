@@ -17,7 +17,7 @@ class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $navigationGroup = 'Company Management';
     protected static ?int $navigationSort = 0;
 
@@ -38,8 +38,12 @@ class EmployeeResource extends Resource
                     ->relationship('position', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('employee_code')
+                    ->label('Emp_Code')
+                    ->disabled()
+                    ->dehydrated(true)
                     ->required()
-                    ->maxLength(255),
+                    ->default(fn() => 'EMP-' . str_pad(\App\Models\Employee::query()->max('id') + 1, 5, '0', STR_PAD_LEFT))
+                    ->unique(ignoreRecord: true),
             ]);
     }
 

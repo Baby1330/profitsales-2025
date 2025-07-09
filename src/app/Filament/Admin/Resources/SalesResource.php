@@ -17,7 +17,7 @@ class SalesResource extends Resource
 {
     protected static ?string $model = Sales::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
@@ -64,6 +64,10 @@ class SalesResource extends Resource
                     ->label('Employee')
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('employee.branch.name')
+                    ->label('Cabang')
+                    ->searchable(),
+                
                 Tables\Columns\TextColumn::make('department.name')
                     ->label('Department')
                     ->sortable(),

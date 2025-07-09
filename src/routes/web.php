@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\OrderInvoiceController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
-use Illuminate\Support\Facades\Response;
 
 /* NOTE: Do Not Remove
 / Livewire asset handling if using sub folder in domain
@@ -21,3 +21,7 @@ Livewire::setScriptRoute(function ($handle) {
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/admin/orders/{order}/invoice', [OrderInvoiceController::class, 'show'])
+    ->name('orders.invoice')
+    ->middleware(['auth', 'verified']);

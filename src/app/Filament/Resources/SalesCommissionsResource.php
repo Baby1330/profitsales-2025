@@ -19,7 +19,7 @@ class SalesCommissionsResource extends Resource
 {
     protected static ?string $model = SalesCommissions::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();

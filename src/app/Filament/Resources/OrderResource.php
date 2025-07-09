@@ -27,7 +27,7 @@ use Filament\Forms\Components\TextInput;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     public static function getEloquentQuery(): Builder
     {
@@ -106,7 +106,7 @@ class OrderResource extends Resource
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
 
                     // Hidden client_id for client users
-                    Hidden::make('client_id')
+                    TextInput::make('client_id')
                         ->default(fn() => Filament::auth()->user()?->client?->id)
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('client')),
@@ -118,7 +118,7 @@ class OrderResource extends Resource
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
 
                     // Hidden sales_id for sales users
-                    Hidden::make('sales_id')
+                    TextInput::make('sales_id')
                         ->default(fn() => Filament::auth()->user()?->employee?->sales?->id)
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
@@ -149,10 +149,16 @@ class OrderResource extends Resource
                         ->unique(ignoreRecord: true),
 
                     Select::make('category')
-                        ->options(['SO' => 'Sales Order', 'PO' => 'Purchase Order'])
-                        ->default('SO') 
-                        ->disabled()     
-                        ->required(),
+                        ->label('Category')
+                        ->options([
+                            'SO' => 'Sales Order',
+                            'PO' => 'Purchase Order',
+                        ])
+                        ->default('SO')
+                        ->disabled()
+                        ->dehydrated(true),
+                    //->hint('Sales Order'), // tampilkan hint jika placeholder tidak efektif, // Tampilkan label, bukan kode
+                    // tetap dikirim ke backend saat submit form
 
                     TextInput::make('total')
                         ->label('Total')

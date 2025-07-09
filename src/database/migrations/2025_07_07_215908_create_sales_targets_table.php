@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('sales_targets', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Sales::class)->constrained()->cascadeOnDelete();
-            $table->year('year');
-            $table->tinyInteger('month'); 
-            $table->integer('targetprod')->default(5); 
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('branch_id')->constrained()->onDelete('cascade');
+            $table->date('month'); // e.g. 2025-07-01
+            $table->integer('target_value'); // in total orders count or total revenue
             $table->timestamps();
-
-            $table->unique(['sales_id', 'year', 'month']);
         });
     }
 

@@ -18,7 +18,7 @@ class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?string $navigationGroup = 'Company Management';
     protected static ?int $navigationSort = -2;
 
@@ -32,22 +32,25 @@ class BranchResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\TextInput::make('code')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('state')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('country')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('postcode')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('address')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\TextInput::make('state')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\TextInput::make('country')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\TextInput::make('postcode')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\TextInput::make('phone')
+                //     ->tel()
+                //     ->required()
+                //     ->maxLength(255),
             ]);
     }
 
@@ -60,16 +63,19 @@ class BranchResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('code')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('state')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('country')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('postcode')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
+                
+                // Tables\Columns\TextColumn::make('address')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('state')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('country')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('postcode')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('phone')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

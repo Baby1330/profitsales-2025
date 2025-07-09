@@ -16,37 +16,53 @@ class OrganizationSeeder extends Seeder
     public function run(): void
     {
         $company = Company::firstOrCreate(
-            ['name' => 'Nexus Innovations Inc.'],
-            ['address' => '123 Tech Avenue', 'state' => 'California', 'country' => 'USA', 'postcode' => '90210']
+            ['name' => 'PT Lapi Laboratories'],
+            ['address' => 'Jl.Gedong Panjang No 32', 'state' => 'Jakarta Barat'
+            , 'country' => 'Indonesia', 'postcode' => '11240']
         );
 
-        // --- Create Branches ---
-        Branch::firstOrCreate(
-            ['company_id' => $company->id, 'name' => 'Los Angeles HQ'],
-            ['address' => '456 Innovation Drive', 'state' => 'California', 'country' => 'USA', 'postcode' => '90210', 'phone' => '123-456-7890']
-        );
-        Branch::firstOrCreate(
-            ['company_id' => $company->id, 'name' => 'New York Office'],
-            ['address' => '789 Commerce St', 'state' => 'New York', 'country' => 'USA', 'postcode' => '10001', 'phone' => '212-555-0199']
-        );
+        $branches = [
+            'PLB' => 'Palembang','LBU' => 'Lubuklinggau','PBM' => 'Prabumulih','LHT' => 'Lahat','PDG' => 'Padang', 'BKT' => 'Bukittinggi',
+            'SLK' => 'Solok','PYK' => 'Payakumbuh','PTK' => 'Pontianak','BJM' => 'Banjarmasin','BPN' => 'Balikpapan','SDA' => 'Samarinda','PKA' => 'Palangkaraya',
+            'SBY' => 'Surabaya','MLG' => 'Malang','MDU' => 'Madiun','MJK' => 'Mojokerto','KDR' => 'Kediri','PBO' => 'Probolinggo','PSR' => 'Pasuruan',
+            'JBR' => 'Jember','DPA' => 'Denpasar','SGA' => 'Singaraja',
+            'JKT' => 'Jakarta','BKS' => 'Bekasi','CKR' => 'Cikarang','BDG' => 'Bandung','BGR' => 'Bogor',
+            'CRB' => 'Cirebon','SKB' => 'Sukabumi','GRT' => 'Garut','TSA' => 'Tasikmalaya','SDG' => 'Sumedang','MDN' => 'Medan','PMS' => 'Pematangsiantar',
+            'BJI' => 'Binjai','KSR' => 'Kisaran','PKB' => 'Pekanbaru','BTM' => 'Batam','TPN' => 'Tanjungpinang','SRG' => 'Serang',
+            'CGN' => 'Cilegon','TGR' => 'Tangerang','SMG' => 'Semarang','SLO' => 'Solo','MGL' => 'Magelang','STG' => 'Salatiga','PWT' => 'Purwokerto',
+            'TGL' => 'Tegal','CLP' => 'Cilacap','KDS' => 'Kudus','PTI' => 'Pati','MKS' => 'Makassar','MDO' => 'Manado',
+            'PLU' => 'Palu','KDI' => 'Kendari','GTO' => 'Gorontalo', 
+        ];
+        
+        foreach ($branches as $code => $name) {
+            $branch = Branch::firstOrCreate(
+                ['name' => $name, 'company_id' => $company->id],
+                ['code' => $code]
+            );
+        
+            if (!$branch->code) {
+                $branch->code = $code;
+                $branch->save();
+            }
+        
+            // $this->command->info("Created branch: $name ($code)");
+        }
 
-        // --- Define the standard company structure ---
         $structure = [
-            'Technology' => ['Chief Technology Officer', 'Software Engineer'],
-            'Sales' => ['Sales Manager', 'Sales Representative'],
-            'Finance' => ['Finance Manager', 'Accountant', 'Financial Analyst'],
-            'Purchasing' => ['Purchasing Manager', 'Buyer'],
+            'Marketing' => ['OTC Marketing','NSM OTC', 'SM OTC', 'AM OTC', 'SPV OTC', 'SPO OTC'],
+            'Technology' => ['Manager IT', 'App.Dev Manager','Programmer', 'Admin IT'],
+            'Sales' => ['Salesman'],
+            'Finance' => ['Finance'],
         ];
 
-        // --- Apply the structure to all branches ---
-        $branches = Branch::all();
-        foreach ($branches as $branch) {
+        $branchList = Branch::all();
+        foreach ($branchList as $branch) {
             foreach ($structure as $deptName => $positions) {
                 $department = Department::firstOrCreate([
                     'branch_id' => $branch->id,
                     'name' => $deptName
                 ]);
-
+        
                 foreach ($positions as $posName) {
                     Position::firstOrCreate([
                         'department_id' => $department->id,
