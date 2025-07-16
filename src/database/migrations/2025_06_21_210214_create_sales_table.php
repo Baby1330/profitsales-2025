@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignIdFor(Department::class);
             $table->foreignIdFor(Position::class);
             $table->string('phone');
+            $table->string('code')->nullable();
             $table->timestamps();
         });
     }

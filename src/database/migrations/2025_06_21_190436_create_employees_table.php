@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Branch;
+use App\Models\Client;
 use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->foreignIdFor(Branch::class);
             $table->foreignIdFor(Department::class);
             $table->foreignIdFor(Position::class);
-            $table->foreignId('client_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Client::class)->nullable()->constrained()->nullOnDelete();
             $table->string('employee_code');
             $table->timestamps();
         });

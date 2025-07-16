@@ -5,6 +5,7 @@ namespace App\Filament\Sales\Widgets;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\SalesCommissions;
+use App\Models\SalesTarget;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -51,9 +52,16 @@ class TotalCommissions extends BaseWidget
         })
         ->sum('quantity');
 
+        $bulanIni = Carbon::now()->startOfMonth();
+
+        $target = SalesTarget::where('user_id', $userId)
+            ->whereDate('month', $bulanIni)
+            ->value('target_value');
+
         return [
             Card::make('Total Commissions This Month', 'IDR ' . number_format($totalThisMonth, 0))->color('success'),
             Card::make('Total Commissions Last Month', 'IDR ' . number_format($totalLastMonth, 0))->color('gray'),
+            Card::make('Sales Target', $target . '')->color('info')->description('Target Bulan Ini'),
             Card::make('Total Order', $totalPO . ' Orders')->color('warning')->description('Just order already being PO'),
             Card::make('Rejected Order', $rejectedSO . ' Orders')->color('danger')->description('Sales Orders rejected'),
             Card::make('Pending Approval', $pendingSO . ' Orders')->color('primary')->description('SO waiting for approval'),

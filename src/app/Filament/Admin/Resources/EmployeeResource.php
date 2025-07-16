@@ -4,7 +4,9 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\EmployeeResource\Pages;
 use App\Filament\Admin\Resources\EmployeeResource\RelationManagers;
+use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Position;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,15 +30,49 @@ class EmployeeResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
-                Forms\Components\Select::make('branch_id')
+                    Forms\Components\Select::make('branch_id')
+                    ->label('Cabang')
                     ->relationship('branch', 'name')
-                    ->required(),
+                    ->preload()
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function (callable $set) {
+                        // Reset department_id ketika branch berubah
+                        $set('department_id', null);
+                    }),
+                    
                 Forms\Components\Select::make('department_id')
-                    ->relationship('department', 'name')
-                    ->required(),
+                    ->label('Department')
+                    ->required()
+                    ->options(function (callable $get) {
+                        $branchId = $get('branch_id');
+                
+                        if (!$branchId) {
+                            return Department::pluck('name', 'id'); 
+                        }
+                
+                        return Department::where('branch_id', $branchId)
+                            ->pluck('name', 'id');
+                    })
+                    ->reactive() 
+                    ->disabled(fn (callable $get) => !$get('branch_id'))
+                    ->dehydrated(),
                 Forms\Components\Select::make('position_id')
-                    ->relationship('position', 'name')
-                    ->required(),
+                    ->label('Position')
+                    ->required()
+                    ->options(function (callable $get) {
+                        $departmentId = $get('department_id');
+                
+                        if (!$departmentId) {
+                            return Position::pluck('name', 'id'); 
+                        }
+                
+                        return Position::where('department_id', $departmentId)
+                            ->pluck('name', 'id');
+                    })
+                    ->reactive() 
+                    ->disabled(fn (callable $get) => !$get('department_id'))
+                    ->dehydrated(),
                 Forms\Components\TextInput::make('employee_code')
                     ->label('Emp_Code')
                     ->disabled()

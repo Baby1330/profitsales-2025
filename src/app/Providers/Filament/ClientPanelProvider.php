@@ -2,8 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\ProductResource;
+use App\Filament\Admin\Resources\SalesTargetResource;
+use App\Filament\Admin\Widgets\BranchEarningsStat;
 use App\Filament\Client\Pages\Auth\Register as ClientRegister;
+use App\Filament\Client\Widgets\SalesHistoryList;
 use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\SalesCommissionsResource;
+use App\Filament\Sales\Widgets\ProductSoldTable;
+use App\Filament\Sales\Widgets\TotalCommissions;
 use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,25 +39,24 @@ class ClientPanelProvider extends PanelProvider
             ->id('client')
             ->path('client')
             ->brandName('Client Portal')
-            // Use the dedicated login and registration methods
             ->login()
-            // Point to the custom registration page class
             ->registration(\App\Filament\Client\Pages\Auth\Register::class)
-            //->registration(ClientRegister::class)
             ->passwordReset()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            // Revised navigation definition
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder->group(
                     NavigationGroup::make('Client Menu')
                         ->items([
-                            // Use the Resource's getUrl() method for more robust routing
+                            NavigationItem::make('Dashboard')
+                                ->url(fn() => Pages\Dashboard::getUrl())
+                                ->icon('heroicon-o-home')
+                                ->isActiveWhen(fn() => request()->routeIs('filament.client.pages.dashboard')),
                             NavigationItem::make('My Orders')
-                                ->url(fn(): string => OrderResource::getUrl('index'))
+                                ->url(fn() => OrderResource::getUrl('index'))
                                 ->icon('heroicon-o-shopping-cart')
-                                ->isActiveWhen(fn(): bool => request()->routeIs(OrderResource::getRouteBaseName() . '.*')),
+                                ->isActiveWhen(fn() => request()->routeIs(OrderResource::getRouteBaseName() . '.*')),
                         ]),
                 );
             })
@@ -59,14 +65,14 @@ class ClientPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->resources([
-                OrderResource::class
-            ])
             ->discoverWidgets(in: app_path('Filament/Client/Widgets'), for: 'App\\Filament\\Client\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                // Consider removing FilamentInfoWidget if not needed for clients
-                // Widgets\FilamentInfoWidget::class,
+                ProductSoldTable::class,
+                SalesHistoryList::class,
+            ])
+            ->resources([
+                OrderResource::class,
+                ProductResource::class
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -81,14 +87,6 @@ class ClientPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                // This closure for role checking is fine
-                // function ($request, $next) {
-                //     if (!auth()->user()?->hasRole('client')) {
-                //         abort(403, 'Unauthorized access.');
-                //     }
-
-                //     return $next($request);
-                // },
             ])
             // Tenancy and multi-guard configurations can be added here if needed
         ;

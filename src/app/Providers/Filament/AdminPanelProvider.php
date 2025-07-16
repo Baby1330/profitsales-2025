@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\ClientResource;
 use App\Filament\Admin\Widgets\SalesTargetBranchProgress;
 use App\Filament\Admin\Widgets\SalesTargetChart;
 use App\Filament\Resources\OrderResource;
@@ -115,7 +116,8 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 config('filament-logger.activity_resource'),
                 SalesCommissionsResource::class,
-                OrderResource::class
+                OrderResource::class,
+                // ClientResource::class
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->middleware([

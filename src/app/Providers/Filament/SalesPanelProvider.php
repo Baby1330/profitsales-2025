@@ -2,11 +2,14 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\ProductResource;
+use App\Filament\Admin\Resources\SalesTargetResource;
 use App\Filament\Admin\Widgets\BranchEarningsStat;
 use App\Filament\Resources\OrderResource;
 use App\Filament\Resources\SalesCommissionsResource;
 use App\Filament\Sales\Widgets\ProductSoldTable;
 use App\Filament\Sales\Widgets\TotalCommissions;
+use App\Models\SalesTarget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -51,7 +54,9 @@ class SalesPanelProvider extends PanelProvider
             ])
             ->resources([
                 SalesCommissionsResource::class,
-                OrderResource::class
+                OrderResource::class,
+                SalesTargetResource::class,
+                ProductResource::class
             ])
             ->middleware([
                 EncryptCookies::class,

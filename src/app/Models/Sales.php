@@ -10,6 +10,7 @@ class Sales extends Model
     protected $fillable = [
         'user_id',
         'employee_id',
+        'branch_id',
         'department_id',
         'position_id',
         'phone',
@@ -25,6 +26,11 @@ class Sales extends Model
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function department(): BelongsTo

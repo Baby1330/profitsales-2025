@@ -27,7 +27,7 @@ use Filament\Forms\Components\TextInput;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getEloquentQuery(): Builder
     {
@@ -100,13 +100,13 @@ class OrderResource extends Resource
                                 ->get()
                                 ->mapWithKeys(fn($client) => [$client->id => $client->user?->name ?? 'No User']);
                         })
-                        ->searchable()
+                        // ->searchable()
                         ->required()
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
 
                     // Hidden client_id for client users
-                    TextInput::make('client_id')
+                    Hidden::make('client_id')
                         ->default(fn() => Filament::auth()->user()?->client?->id)
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('client')),
@@ -118,7 +118,7 @@ class OrderResource extends Resource
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
 
                     // Hidden sales_id for sales users
-                    TextInput::make('sales_id')
+                    Hidden::make('sales_id')
                         ->default(fn() => Filament::auth()->user()?->employee?->sales?->id)
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('sales')),
@@ -132,7 +132,7 @@ class OrderResource extends Resource
                                 ->get()
                                 ->mapWithKeys(fn($sales) => [$sales->id => $sales->employee?->user?->name ?? 'No User']);
                         })
-                        ->searchable()
+                        // ->searchable()
                         ->required()
                         ->dehydrated(true)
                         ->visible(fn() => Filament::auth()->user()?->hasRole('client')),

@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\SalesTargetResource\Pages;
 use App\Filament\Admin\Resources\SalesTargetResource\RelationManagers;
 use App\Models\Branch;
 use App\Models\SalesTarget;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\ProgressColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Model;
 
 class SalesTargetResource extends Resource
 {
@@ -24,11 +26,56 @@ class SalesTargetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Filament::auth()->user();
+        $panel = Filament::getCurrentPanel()?->getId();
+
+        if ($panel === 'sales' && $user->hasRole('sales')) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query;
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = Filament::auth()->user();
+        $panel = Filament::getCurrentPanel()?->getId();
+
+        return match ($panel) {
+            'admin' => $user?->hasRole('super_admin'),
+            'sales' => $user?->hasRole('sales'),
+            default => true,
+        };
+    }
+
+    public static function canCreate(): bool
+    {
+        return Filament::auth()->user()?->hasRole('super_admin');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Filament::auth()->user()?->hasRole('super_admin');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+            Forms\Components\Hidden::make('user_id')
+                ->required(),
+            
+            Forms\Components\Placeholder::make('user_name')
+                ->label('Nama Sales')
+                ->content(fn ($record) => $record->user->name ?? '-'),
+
+            Forms\Components\TextInput::make('target_value')
+                    ->label('Target Value')
+                    ->numeric()
+                    ->required(),
             ]);
     }
 
@@ -72,6 +119,7 @@ class SalesTargetResource extends Resource
             ])
             ->headerActions([
                 Tables\Actions\Action::make('Generate Targets')
+                    ->visible(fn() => auth()->user()?->hasRole('super_admin'))
                     ->form([
                         Forms\Components\Select::make('branch_id')
                             ->options(
@@ -136,7 +184,7 @@ class SalesTargetResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->visible(fn($record) => !$record->isAchieved()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

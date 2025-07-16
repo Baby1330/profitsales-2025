@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SalesCommissionsResource\Pages;
 use App\Filament\Resources\SalesCommissionsResource\RelationManagers;
+use App\Models\Employee;
 use App\Models\SalesCommissions;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -60,8 +61,6 @@ class SalesCommissionsResource extends Resource
         return Filament::auth()->user()?->hasRole('super_admin');
     }
 
-
-
     public static function form(Form $form): Form
     {
         return $form
@@ -69,7 +68,17 @@ class SalesCommissionsResource extends Resource
                 Forms\Components\Select::make('sales_id')
                     ->relationship('sales.employee.user', 'name')
                     ->label('Sales')
-                    ->searchable()
+                    ->options(function () {
+                        return Employee::whereHas('department', function ($query) {
+                                $query->where('name', 'Sales');
+                            })
+                            ->with('user') 
+                            ->get()
+                            ->mapWithKeys(function ($employee) {
+                                return [$employee->id => $employee->user->name ?? 'Tanpa Nama'];
+                            });
+                    })
+                    // ->searchable()
                     ->required(),
 
                 Forms\Components\Select::make('order_id')
@@ -115,12 +124,12 @@ class SalesCommissionsResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

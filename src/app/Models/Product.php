@@ -9,4 +9,9 @@ class Product extends Model
     protected $tables = 'products';
 
     protected $guarded = ['id'];
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }
