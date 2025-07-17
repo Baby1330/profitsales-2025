@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Auth;
 class ProductSoldTable extends BaseWidget
 {
     // protected array|string|int $columnSpan = [
-    //     // 'sm' => 12,
-    //     // 'md' => 6,
-    //     // 'lg' => 4,
+    //     'sm' => 12,
+    //     'md' => 6,
+    //     'lg' => 4,
     // ];
-    // protected int|string|array $columnSpan = 2;
+    protected int|string|array $columnSpan = 2;
     protected static ?int $sort = 2;
     protected static ?string $heading = 'List Product yang Terjual';
 

@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\SalesTargetResource;
 use App\Filament\Admin\Widgets\BranchEarningsStat;
 use App\Filament\Client\Pages\Auth\Register as ClientRegister;
 use App\Filament\Client\Widgets\SalesHistoryList;
+use App\Filament\Client\Widgets\StatusOrder;
 use App\Filament\Resources\OrderResource;
 use App\Filament\Resources\SalesCommissionsResource;
 use App\Filament\Sales\Widgets\ProductSoldTable;
@@ -57,6 +58,10 @@ class ClientPanelProvider extends PanelProvider
                                 ->url(fn() => OrderResource::getUrl('index'))
                                 ->icon('heroicon-o-shopping-cart')
                                 ->isActiveWhen(fn() => request()->routeIs(OrderResource::getRouteBaseName() . '.*')),
+                            NavigationItem::make('Product')
+                                ->url(fn() => ProductResource::getUrl('index'))
+                                ->icon('heroicon-o-beaker')
+                                ->isActiveWhen(fn() => request()->routeIs(ProductResource::getRouteBaseName() . '.*')),
                         ]),
                 );
             })
@@ -67,7 +72,8 @@ class ClientPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Client/Widgets'), for: 'App\\Filament\\Client\\Widgets')
             ->widgets([
-                ProductSoldTable::class,
+                StatusOrder::class,
+                // ProductSoldTable::class,
                 SalesHistoryList::class,
             ])
             ->resources([

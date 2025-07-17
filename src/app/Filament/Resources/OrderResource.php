@@ -224,7 +224,7 @@ class OrderResource extends Resource
                             ->required()
                             ->disabled(),
                     ])
-                    ->columns(2),
+                    ->columnSpanFull(),
             ]),
         ]);
     }

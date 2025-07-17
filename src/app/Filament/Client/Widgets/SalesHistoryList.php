@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 class SalesHistoryList extends TableWidget
 {
     protected static ?string $heading = 'Sales History';
+    protected array|string|int $columnSpan = 2;
+    protected static ?int $sort = 3;
     protected function getTableQuery(): Builder|null
     {
         $user = auth()->user();
