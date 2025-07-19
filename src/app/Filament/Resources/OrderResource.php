@@ -187,6 +187,17 @@ class OrderResource extends Resource
                             ->relationship('product', 'name')
                             ->required()
                             ->reactive()
+                            ->options(function () {
+                                return \App\Models\Product::withSum('orderDetails as total_ordered', 'quantity')
+                                    ->get()
+                                    ->filter(function ($product) {
+                                        $stockRemaining = $product->stock - ($product->total_ordered ?? 0);
+                                        return $stockRemaining > 0;
+                                    })
+                                    ->mapWithKeys(function ($product) {
+                                        return [$product->id => $product->name];
+                                    });
+                            })
                             ->afterStateUpdated(function ($state, callable $set) {
                                 $product = \App\Models\Product::find($state);
                                 if ($product) {

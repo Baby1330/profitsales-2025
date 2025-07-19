@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
                 'name' => 'Alerhis Kaplet',
                 'description' => 'Antihistamin untuk meredakan alergi seperti bersin, gatal, dan ruam.',
                 'price' => 100000.00,
-                'stock' => 250,
+                'stock' => 0,
             ],
             [
                 'sku' => 'FULZ',
@@ -48,7 +48,7 @@ class ProductSeeder extends Seeder
                 'name' => 'Imunvit',
                 'description' => 'Suplemen imun yang mendukung daya tahan tubuh.',
                 'price' => 70000.00,
-                'stock' => 750,
+                'stock' => 90,
             ],
         ];
 
