@@ -22,11 +22,11 @@ class UserSeeder extends Seeder
         ->firstOrFail();
     
         $salesRole = Role::where('name', 'sales')
-            ->where('guard_name', 'sales_guard')
+            ->where('guard_name', 'web')
             ->firstOrFail();
         
         $clientRole = Role::where('name', 'client')
-            ->where('guard_name', 'client_guard')
+            ->where('guard_name', 'web')
             ->firstOrFail();
 
         $branchJKT = Branch::where('code', 'JKT')->firstOrFail();
@@ -178,6 +178,19 @@ class UserSeeder extends Seeder
                 'contact_person' => 'Indah',
                 'phone' => '+62 21 222 5566',
             ],
+            [
+                'code' => 'JKT-Client-1167',
+                'branch_code' => 'JKT',
+                'sales_email' => 'test@admin.com',
+                'email' => 'testclient@admin.com',
+                'name' => 'Ap. APT',
+                'address' => 'Jl. KH Noer Ali No. 25',
+                'state' => 'Jakarta',
+                'country' => 'Indonesia',
+                'postcode' => '17145',
+                'contact_person' => 'Indah',
+                'phone' => '+62 21 222 5566',
+            ],
         ];
 
         foreach ($clients as $clt) {
@@ -213,6 +226,7 @@ class UserSeeder extends Seeder
             ['email' => 'SLS-BDG-8@admin.com', 'name' => 'Yusuf', 'employee_code' => 'EMP-00011', 'code' => 'BDG', 'phone' => '081200000027'],
             ['email' => 'SLS-MKS-9@admin.com', 'name' => 'Irwandi', 'employee_code' => 'EMP-00012', 'code' => 'MKS', 'phone' => '081200000029'],
             ['email' => 'SLS-MDN-10@admin.com', 'name' => 'Gunadi', 'employee_code' => 'EMP-00013', 'code' => 'MDN', 'phone' => '081200000034'],
+            ['email' => 'testsales@admin.com', 'name' => 'SalesTest', 'employee_code' => 'EMP-00014', 'code' => 'JKT', 'phone' => '081234972039']
         ];
 
         foreach ($salesEntries as $entry) {

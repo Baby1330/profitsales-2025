@@ -18,7 +18,7 @@ class OrganizationSeeder extends Seeder
         $company = Company::firstOrCreate(
             ['name' => 'PT Lapi Laboratories'],
             ['address' => 'Landmark Pluit Tower A2, Landmark Pluit RT.5/RW.10, Pluit, Penjaringan', 'state' => 'North Jakarta City'
-            , 'country' => 'Indonesia', 'postcode' => '14450' , 'email' => 'ptlapilaboratoies@gmail.com', 'phone' => '02122668888']
+            , 'country' => 'Indonesia', 'postcode' => '14450' , 'email' => 'ptlapilaboratoies@gmail.com', 'contact' => '02122668888']
         );
 
         $branches = [
